@@ -1,14 +1,23 @@
+{{- range .Values.services -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: data-fair
+  name: {{ .name }}
 spec:
   selector:
-    name: data-fair
+    name: {{ .name }}
+  type: {{ default "ClusterIP" .type }}
   ports:
-    - name: "http"
-      port: 8080
-      targetPort: 8080
-    - name: "metrics"
+    {{ range .ports -}}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ default .port .targetPort }}
+      protocol: {{ default "TCP" .protocol }}
+    {{ end -}}
+    {{ if .metrics -}}
+    - name: metrics
       port: 9090
       targetPort: 9090
+    {{ end }}
+---
+{{ end}}

@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 public_ip: 192.168.49.2
-port: 80
+port: 32000
 protocol: http
 
 replicaCount: 1
@@ -45,22 +45,102 @@ pvcs:
   #   accessModes: 
   #     - ReadWriteOnce
   #   storage: 100Mi
-  - name: "mongo"
+  - name: mongo
     storage: 2Gi
-  - name: "elasticsearch"
+  - name: elasticsearch
     storage: 500Mi
-  - name: "data-fair"
-  - name: "simple-directory"
-  - name: "thumbor"
-  - name: "portals"
-  - name: "processings"
+  - name: data-fair
+  - name: simple-directory
+  - name: thumbor
+  - name: portals
+  - name: processings
 
 services:
+
+  # - name: default
+  #   type: ClusterIP
+  #   metrics: false
+  #   ports: 
+  #     - name: http
+  #       port: 8080
+  #       targetPort: 8080
+  #       protocol: TCP
+  #       nodePort: 32000
+
+
   - name: mongo
-    type: ClusterIP
-    targetport: 80
-    port: 80
+    ports: 
+      - name: db
+        port: 27017
+
+  - name: elasticsearch
+    ports: 
+      - name: db
+        port: 9200
+  
+  - name: nginx
+    ports: 
+      - name: http
+        port: 32000
+
+  - name: capture
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: openapi-viewer
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: thumbor
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: data-fair-worker
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: simple-directory
+    ports: 
+      - name: auth
+        port: 8080
+      - name: mail
+        port: 1080
+
+  - name: portals
     metrics: true
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: data-fair
+    metrics: true
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: notify
+    metrics: true
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: metrics
+    metrics: true
+    ports: 
+      - name: http
+        port: 8080
+
+  - name: processings
+    metrics: true
+    ports: 
+      - name: http
+        port: 8080
+  
+  
 
 ingress:
   enabled: false
