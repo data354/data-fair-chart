@@ -6,9 +6,9 @@ metadata:
 spec:
   selector:
     name: {{ .name }}
-  {{ if .externalName }}
+  {{ with .externalName }}
   type: ExternalName
-  externalName: {{ .externalName }}
+  externalName: {{ . }}
   {{ else }}
   type: {{ default "ClusterIP" .type }}
   ports:
