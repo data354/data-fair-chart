@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-global
+data:
+  base-url: "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}"
+  mongo-host: mongo
+  elasticsearch-host: elasticsearch
+  secret: azerty
+  data-fair-api-key: dTo4Z21YOHdjYlY6U3M0akREU1pkRERqOHBnRnFQUVpf
+  mails-transport: '{"host": "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}/mails"}'
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  default.conf: |-
+    {{ .Files.Get "nginx.conf"}}

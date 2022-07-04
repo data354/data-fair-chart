@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-fair
+spec:
+  selector:
+    name: data-fair
+  ports:
+    - name: "http"
+      port: 8080
+      targetPort: 8080
+    - name: "metrics"
+      port: 9090
+      targetPort: 9090
