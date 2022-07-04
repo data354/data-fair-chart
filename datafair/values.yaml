@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 public_ip: 192.168.49.2
-port: 32000
+port: &port 80
 protocol: http
 
 replicaCount: 1
@@ -60,6 +60,7 @@ services:
   # - name: default
   #   type: ClusterIP
   #   metrics: false
+  #   externalName: mongo.com
   #   ports: 
   #     - name: http
   #       port: 8080
@@ -81,7 +82,7 @@ services:
   - name: nginx
     ports: 
       - name: http
-        port: 32000
+        port: *port
 
   - name: capture
     ports: 

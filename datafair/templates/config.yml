@@ -18,4 +18,4 @@ metadata:
   name: nginx-conf
 data:
   default.conf: |-
-    {{ .Files.Get "nginx.conf"}}
+    {{ .Files.Get "nginx.conf" | indent 2 }}

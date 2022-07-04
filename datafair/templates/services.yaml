@@ -6,6 +6,10 @@ metadata:
 spec:
   selector:
     name: {{ .name }}
+  {{ if .externalName }}
+  type: ExternalName
+  externalName: {{ .externalName }}
+  {{ else }}
   type: {{ default "ClusterIP" .type }}
   ports:
     {{ range .ports -}}
@@ -19,5 +23,6 @@ spec:
       port: 9090
       targetPort: 9090
     {{ end }}
+  {{ end }}
 ---
 {{ end}}
