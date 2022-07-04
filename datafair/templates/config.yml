@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-global
+  name: global-conf
 data:
   base-url: "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}"
   mongo-host: mongo
