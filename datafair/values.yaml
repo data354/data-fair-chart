@@ -370,6 +370,57 @@ apps:
       - name: THUMBOR_URL
         value: *THUMBOR_URL
 
+  - name: processings
+    image: ghcr.io/data-fair/processings:1
+    volumes:
+      - name: processings
+        type: persistentVolumeClaim
+        mountPath: /data
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+
+      - name: MONGO_HOST
+        configMapKeyRef: *MONGO_HOST
+
+      - name: MODE
+        value: server
+
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/processings
+
+      - name: DIRECTORY_URL
+        value: *DIRECTORY_URL
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: *PRIVATE_DIRECTORY_URL
+
+      - name: DATAFAIR_URL
+        value: *DATAFAIR_URL
+
+      - name: NOTIFY_URL
+        value: *NOTIFY_URL
+
+      - name: PRIVATE_NOTIFY_URL
+        value: *PRIVATE_NOTIFY_URL
+
+      - name: OPENAPIVIEWER_URL
+        value: *OPENAPI_VIEWER_URL
+
+      - name: MAILS_TRANSPORT
+        configMapKeyRef: *MAILS_TRANSPORT
+
+      - name: DATA_FAIR_ADMIN_MODE
+        value: "true"
+        
+      - name: DATA_FAIR_API_KEY
+        configMapKeyRef: &DATA_FAIR_API_KEY
+            name: global-conf
+            key: data-fair-api-key
+
+      - name: SECRET_IDENTITIES
+        configMapKeyRef: *SECRET_NOTIFICATIONS
+
 pvcs:
   # - name: "default"
   #   accessModes: 
