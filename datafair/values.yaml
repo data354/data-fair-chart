@@ -263,6 +263,60 @@ apps:
       - name: EXTRA_ADMIN_NAV_ITEMS
         value: '[{"id": "processings","iframe": "/processings/admin/plugins", "icon": "mdi-cog-transfer-outline", "title": "Traitements périodiques"},{"id": "portal","iframe": "/portals/manager/admin", "icon": "mdi-presentation", "title": "Portails"}]'
 
+  - name: data-fair-worker
+    image: ghcr.io/data-fair/data-fair:3
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+
+      - name: MONGO_HOST
+        configMapKeyRef: *MONGO_HOST
+
+      - name: ELASTICSEARCH_HOST
+        configMapKeyRef: *ELASTICSEARCH_HOST
+            
+      - name: MODE
+        value: worker
+
+      - name: DEBUG
+        value: upgrade*
+        
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/data-fair
+
+      - name: DIRECTORY_URL
+        value: *DIRECTORY_URL
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: *PRIVATE_DIRECTORY_URL
+
+      - name: OPENAPI_VIEWER_URL
+        value: $(BASE_URL)/api-doc/
+
+      - name: ES_HOST
+        value: $(ELASTICSEARCH_HOST):9200
+
+      - name: MONGO_URL
+        value: mongodb://$(MONGO_HOST):27017/data-fair
+
+      - name: CAPTURE_URL
+        value: $(BASE_URL)/capture/
+
+      - name: NOTIFY_URL
+        value: $(BASE_URL)/notify
+        
+      - name: PRIVATE_NOTIFY_URL
+        value: http://notify:8080
+
+      - name: SECRET_NOTIFICATIONS
+        configMapKeyRef: *SECRET_NOTIFICATIONS
+
+      - name: THUMBOR_KEY
+        value: $(SECRET_IDENTITIES)
+
+      - name: THUMBOR_URL
+        value: $(BASE_URL)/thumbor/
+
 
 pvcs:
   # - name: "default"
