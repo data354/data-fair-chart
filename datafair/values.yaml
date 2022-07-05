@@ -167,6 +167,40 @@ apps:
       - name: SYSLOG_SECRET
         value: syslog_secret
 
+  - name: notify
+    image: ghcr.io/data-fair/notify:3
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+
+      - name: MONGO_HOST
+        configMapKeyRef: *MONGO_HOST
+
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/notify
+
+      - name: DIRECTORY_URL
+        value: *DIRECTORY_URL
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: *PRIVATE_DIRECTORY_URL
+
+      - name: MONGO_URL
+        value: mongodb://$(MONGO_HOST):27017/notify
+
+      - name: OPENAPI_VIEWER_URL
+        value: $(BASE_URL)/api-doc/
+
+      - name: SECRET_NOTIFICATIONS
+        configMapKeyRef: *SECRET_NOTIFICATIONS
+
+      - name: SECRET_IDENTITIES
+        value: $(SECRET_NOTIFICATIONS)
+
+      - name: SECRET_SENDMAILS
+        value: $(SECRET_NOTIFICATIONS)
+
+
 pvcs:
   # - name: "default"
   #   accessModes: 
