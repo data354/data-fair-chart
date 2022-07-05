@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 public_ip: 192.168.49.2
-port: &port 80
+port: &port 32001
 protocol: http
 
 apps:
@@ -49,6 +49,81 @@ apps:
       - name: mongo
         type: persistentVolumeClaim
         mountPath: /data/db
+
+  - name: simple-directory
+    image: ghcr.io/data-fair/simple-directory:4
+    volumes:
+      - name: simple-directory
+        type: persistentVolumeClaim
+        mountPath: /webapp/security
+    env:
+      - name: ADMINS
+        value: '["admin@test.com"]'
+
+      - name: HOME_PAGE
+        configMapKeyRef: &HOME_PAGE
+          name: global-conf
+          key: base-url
+                  
+      - name: MONGO_HOST
+        configMapKeyRef: &MONGO_HOST
+          name: global-conf
+          key: mongo-host
+
+      - name: LIST_ENTITIES_MODE
+        value: admin
+
+      - name: MAILDEV_ACTIVE
+        value: "true"
+
+      - name: MAILS_TRANSPORT
+        configMapKeyRef: &MAILS_TRANSPORT
+          name: global-conf
+          key: mails-transport
+
+      - name: CONTACT
+        value: contact@test.com
+
+      - name: MAILS_FROM
+        value: $(CONTACT)
+
+      - name: MAILDEV_URL
+        value: $(HOME_PAGE)/mails/
+
+      - name: NOTIFY_URL
+        value: $(HOME_PAGE)/notify/
+
+      - name: PASSWORDLESS
+        value: "false"
+
+      - name: PRIVATE_NOTIFY_URL
+        value: http://notify:8080
+
+      - name: PUBLIC_URL
+        value: $(HOME_PAGE)/simple-directory
+
+      - name: ROLES_DEFAULTS
+        value: '["admin","contrib","user"]'
+
+      - name: STORAGE_MONGO_URL
+        value: mongodb://$(MONGO_HOST):27017/simple-directory
+
+      - name: USER_SELF_DELETE
+        value: "true"
+
+      - name: MANAGE_DEPARTMENTS
+        value: "true"
+
+      - name: SECRET_NOTIFICATIONS
+        configMapKeyRef: &SECRET_NOTIFICATIONS
+          name: global-conf
+          key: secret
+      
+      - name: SECRET_SENDMAILS
+        value: $(SECRET_NOTIFICATIONS)
+
+      - name: SECRET_IDENTITIES
+        value: $(SECRET_NOTIFICATIONS)
   
   - name: openapi-viewer
     image: koumoul/openapi-viewer:1
@@ -95,9 +170,12 @@ services:
         port: 9200
   
   - name: nginx
+    type: NodePort
     ports: 
       - name: http
+        targetPort: 80
         port: *port
+        nodePort: *port
 
   - name: capture
     ports: 
