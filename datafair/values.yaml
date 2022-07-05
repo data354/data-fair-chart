@@ -90,14 +90,14 @@ apps:
       - name: MAILDEV_URL
         value: $(HOME_PAGE)/mails/
 
-      - name: NOTIFY_URL
-        value: $(HOME_PAGE)/notify/
-
       - name: PASSWORDLESS
         value: "false"
 
+      - name: NOTIFY_URL
+        value: &NOTIFY_URL $(HOME_PAGE)/notify/
+
       - name: PRIVATE_NOTIFY_URL
-        value: http://notify:8080
+        value: &PRIVATE_NOTIFY_URL http://notify:8080
 
       - name: PUBLIC_URL
         value: $(HOME_PAGE)/simple-directory
@@ -189,7 +189,7 @@ apps:
         value: mongodb://$(MONGO_HOST):27017/notify
 
       - name: OPENAPI_VIEWER_URL
-        value: $(BASE_URL)/api-doc/
+        value: &OPENAPI_VIEWER_URL $(BASE_URL)/api-doc/
 
       - name: SECRET_NOTIFICATIONS
         configMapKeyRef: *SECRET_NOTIFICATIONS
@@ -202,6 +202,10 @@ apps:
 
   - name: data-fair
     image: ghcr.io/data-fair/data-fair:3
+    volumes:
+      - name: data-fair
+        type: persistentVolumeClaim
+        mountPath: /data
     env:
       - name: BASE_URL
         configMapKeyRef: *BASE_URL
@@ -228,7 +232,7 @@ apps:
         value: *PRIVATE_DIRECTORY_URL
 
       - name: OPENAPI_VIEWER_URL
-        value: $(BASE_URL)/api-doc/
+        value: *OPENAPI_VIEWER_URL
 
       - name: ES_HOST
         value: $(ELASTICSEARCH_HOST):9200
@@ -237,13 +241,13 @@ apps:
         value: mongodb://$(MONGO_HOST):27017/data-fair
 
       - name: CAPTURE_URL
-        value: $(BASE_URL)/capture/
+        value: &CAPTURE_URL $(BASE_URL)/capture/
 
       - name: NOTIFY_URL
-        value: $(BASE_URL)/notify
+        value: &NOTIFY_URL $(BASE_URL)/notify
         
       - name: PRIVATE_NOTIFY_URL
-        value: http://notify:8080
+        value: &PRIVATE_NOTIFY_URL http://notify:8080
 
       - name: SECRET_NOTIFICATIONS
         configMapKeyRef: *SECRET_NOTIFICATIONS
@@ -255,7 +259,7 @@ apps:
         value: $(SECRET_IDENTITIES)
 
       - name: THUMBOR_URL
-        value: $(BASE_URL)/thumbor/
+        value: &THUMBOR_URL $(BASE_URL)/thumbor/
 
       - name: EXTRA_NAV_ITEMS
         value: '[{"id": "processings","can":"contrib", "iframe": "/processings/processings", "icon": "mdi-cog-transfer-outline", "title": "Traitements périodiques"},{"id": "portal","iframe": "/portals/manager/portals", "icon": "mdi-presentation", "title": "Portails"},{"id": "metrics","iframe": "/metrics/embed/home", "icon": "mdi-chart-bar", "title": "Audience", "subtitle": "Téléchargements, API"}]'
@@ -265,6 +269,11 @@ apps:
 
   - name: data-fair-worker
     image: ghcr.io/data-fair/data-fair:3
+    volumes:
+    - name: data-fair
+      type: persistentVolumeClaim
+      mountPath: /data
+
     env:
       - name: BASE_URL
         configMapKeyRef: *BASE_URL
@@ -280,7 +289,7 @@ apps:
 
       - name: DEBUG
         value: upgrade*
-        
+
       - name: PUBLIC_URL
         value: $(BASE_URL)/data-fair
 
@@ -291,7 +300,7 @@ apps:
         value: *PRIVATE_DIRECTORY_URL
 
       - name: OPENAPI_VIEWER_URL
-        value: $(BASE_URL)/api-doc/
+        value: *OPENAPI_VIEWER_URL
 
       - name: ES_HOST
         value: $(ELASTICSEARCH_HOST):9200
@@ -300,13 +309,13 @@ apps:
         value: mongodb://$(MONGO_HOST):27017/data-fair
 
       - name: CAPTURE_URL
-        value: $(BASE_URL)/capture/
+        value: *CAPTURE_URL
 
       - name: NOTIFY_URL
-        value: $(BASE_URL)/notify
+        value: *NOTIFY_URL
         
       - name: PRIVATE_NOTIFY_URL
-        value: http://notify:8080
+        value: *PRIVATE_NOTIFY_URL
 
       - name: SECRET_NOTIFICATIONS
         configMapKeyRef: *SECRET_NOTIFICATIONS
@@ -315,8 +324,51 @@ apps:
         value: $(SECRET_IDENTITIES)
 
       - name: THUMBOR_URL
-        value: $(BASE_URL)/thumbor/
+        value: *THUMBOR_URL
 
+  - name: portals
+    image: ghcr.io/data-fair/portals:1
+    volumes:
+      - name: portals
+        type: persistentVolumeClaim
+        mountPath: /webapp/data
+
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/portals
+
+      - name: DIRECTORY_URL
+        value: *DIRECTORY_URL
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: *PRIVATE_DIRECTORY_URL
+
+      - name: DATAFAIR_URL
+        value: &DATAFAIR_URL $(BASE_URL)/data-fair
+
+      - name: NOTIFY_URL
+        value: *NOTIFY_URL
+
+      - name: PRIVATE_NOTIFY_URL
+        value: *PRIVATE_NOTIFY_URL
+        
+      - name: OPENAPIVIEWER_URL
+        value: *OPENAPI_VIEWER_URL
+
+      - name: MONGO_HOST
+        configMapKeyRef: *MONGO_HOST
+
+      - name: SECRET_IDENTITIES
+        configMapKeyRef: *SECRET_NOTIFICATIONS
+
+      - name: THUMBOR_KEY
+        value: $(SECRET_IDENTITIES)
+
+      - name: THUMBOR_URL
+        value: *THUMBOR_URL
 
 pvcs:
   # - name: "default"
