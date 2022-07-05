@@ -18,6 +18,9 @@ spec:
       port: {{ .port }}
       targetPort: {{ default .port .targetPort }}
       protocol: {{ default "TCP" .protocol }}
+      {{ with .nodePort }}
+      nodePort: {{ . }}
+      {{ end }}
     {{ end -}}
     {{ if .metrics -}}
     - name: metrics
