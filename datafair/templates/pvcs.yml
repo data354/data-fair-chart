@@ -1,8 +1,9 @@
+{{- $release_name := .Release.Name -}}
 {{- range .Values.pvcs -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .name }}-data
+  name: {{ $release_name }}-{{ .name }}-data
 spec:
   accessModes:
     {{ range .accessModes -}}

@@ -1,11 +1,12 @@
+{{- $release_name := .Release.Name -}}
 {{- range .Values.services -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .name }}
+  name: {{ $release_name }}-{{ .name }}
 spec:
   selector:
-    name: {{ .name }}
+    name: {{ $release_name }}-{{ .name }}
   {{ with .externalName }}
   type: ExternalName
   externalName: {{ . }}
@@ -25,4 +26,4 @@ spec:
     {{ end }}
   {{ end }}
 ---
-{{ end}}
+{{ end }}

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: global-conf
+  name: {{ .Release.Name }}-global-conf
 data:
   base-url: "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}"
   mongo-host: mongo
@@ -15,7 +15,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-conf
+  name: {{ .Release.Name }}-nginx-conf
 data:
   default.conf: |-
     {{ .Files.Get "nginx.conf" | indent 2 }}
