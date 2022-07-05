@@ -40,6 +40,34 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+apps:
+  - name: thumbor
+    image: apsl/thumbor:6.7.0
+    # env: 
+    volumes:
+      - name: thumbor
+        type: persistentVolumeClaim
+        mountPath: /data
+        readOnly: false
+        
+  - name: elasticsearch
+    image: ghcr.io/data-fair/elasticsearch:7.17.1
+    env:
+      - name: discovery.type
+        value: single-node 
+    volumes:
+      - name: elasticsearch
+        type: persistentVolumeClaim
+        mountPath: /usr/share/elasticsearch/data
+
+  - name: mongo
+    image: mongo:4.4
+    volumes:
+      - name: mongo
+        type: persistentVolumeClaim
+        mountPath: /data/db
+
+
 pvcs:
   # - name: "default"
   #   accessModes: 
@@ -136,28 +164,4 @@ services:
     ports: 
       - name: http
         port: 8080
-  
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}

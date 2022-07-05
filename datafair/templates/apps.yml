@@ -1,0 +1,63 @@
+{{- $release_name := .Release.Name -}}
+{{- range .Values.apps -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $release_name }}-{{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: {{ $release_name }}-{{ .name }}
+  template:
+    metadata:
+      labels:
+        name: {{ $release_name }}-{{ .name }}
+    spec:
+      containers:
+        - name: {{ $release_name }}-{{ .name }}
+          image: {{ .image }}
+          {{ with .volumes }}
+          volumeMounts:
+            {{ range . }}
+            - name: {{ $release_name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ default "false" .readOnly }}
+            {{ end }}
+          {{ end }}
+          {{ with .env }}
+          env:
+          {{ range . }}
+            - name: {{ .name }}
+            {{ with .value }}
+              value: {{ . }}
+            {{ end }}
+            {{ with .configMapKeyRef }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key }}
+            {{ end }}
+            {{ with .secretKeyRef }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key }}
+            {{ end }}
+          {{ end }}
+          {{ end }}
+      {{ with .volumes }}
+      volumes:
+      {{ range . }}
+        - name: {{ $release_name }}-{{ .name }}
+        {{ if eq .type "configMap" }}
+          configMap:
+            name: {{ $release_name }}-{{ .name }}
+        {{ else if eq .type "persistentVolumeClaim" }}
+          persistentVolumeClaim:
+            claimName: {{ $release_name }}-{{ .name }}
+        {{ end }}
+      {{ end }}
+      {{ end }}
+---
+{{ end }}
