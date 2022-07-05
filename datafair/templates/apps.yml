@@ -30,18 +30,18 @@ spec:
           {{ range . }}
             - name: {{ .name }}
             {{ with .value }}
-              value: {{ . }}
+              value: {{ . | quote }}
             {{ end }}
             {{ with .configMapKeyRef }}
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .name }}
+                  name: {{ $release_name }}-{{ .name }}
                   key: {{ .key }}
             {{ end }}
             {{ with .secretKeyRef }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .name }}
+                  name: {{ $release_name }}-{{ .name }}
                   key: {{ .key }}
             {{ end }}
           {{ end }}

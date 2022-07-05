@@ -6,50 +6,25 @@ public_ip: 192.168.49.2
 port: &port 80
 protocol: http
 
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
 apps:
   - name: thumbor
     image: apsl/thumbor:6.7.0
-    # env: 
+    env: 
+      - name: MAX_AGE
+        value: "600"
+      - name: THUMBOR_PORT
+        value: "8000"
+      - name: SECURITY_KEY
+        configMapKeyRef:
+          name: global-conf
+          key: secret
+      - name: STORAGE_EXPIRATION_SECONDS
+        value: "600"
     volumes:
       - name: thumbor
         type: persistentVolumeClaim
         mountPath: /data
-        readOnly: false
-        
+
   - name: elasticsearch
     image: ghcr.io/data-fair/elasticsearch:7.17.1
     env:
@@ -59,6 +34,14 @@ apps:
       - name: elasticsearch
         type: persistentVolumeClaim
         mountPath: /usr/share/elasticsearch/data
+  
+  - name: nginx
+    image: nginx:1.21.6-alpine
+    volumes:
+      - name: nginx-conf
+        type: configMap
+        mountPath: /etc/nginx/conf.d
+        readOnly: true
 
   - name: mongo
     image: mongo:4.4
@@ -66,6 +49,9 @@ apps:
       - name: mongo
         type: persistentVolumeClaim
         mountPath: /data/db
+  
+  - name: openapi-viewer
+    image: koumoul/openapi-viewer:1
 
 
 pvcs:
