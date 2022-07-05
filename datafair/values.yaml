@@ -61,7 +61,7 @@ apps:
         value: '["admin@test.com"]'
 
       - name: HOME_PAGE
-        configMapKeyRef: &HOME_PAGE
+        configMapKeyRef: &BASE_URL
           name: global-conf
           key: base-url
                   
@@ -128,6 +128,21 @@ apps:
   - name: openapi-viewer
     image: koumoul/openapi-viewer:1
 
+  - name: capture
+    image: koumoul/capture:1
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+
+      - name: DIRECTORY_URL
+        value: $(BASE_URL)/simple-directory
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: http://simple-directory:8080
+        
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/capture
+      
 
 pvcs:
   # - name: "default"
