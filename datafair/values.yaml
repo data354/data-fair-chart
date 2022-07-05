@@ -135,14 +135,37 @@ apps:
         configMapKeyRef: *BASE_URL
 
       - name: DIRECTORY_URL
-        value: $(BASE_URL)/simple-directory
+        value: &DIRECTORY_URL $(BASE_URL)/simple-directory
 
       - name: PRIVATE_DIRECTORY_URL
-        value: http://simple-directory:8080
-        
+        value: &PRIVATE_DIRECTORY_URL http://simple-directory:8080
+
       - name: PUBLIC_URL
         value: $(BASE_URL)/capture
       
+  - name: metrics
+    image: ghcr.io/data-fair/metrics:0
+    env:
+      - name: BASE_URL
+        configMapKeyRef: *BASE_URL
+            
+      - name: MONGO_HOST
+        configMapKeyRef: *MONGO_HOST
+
+      - name: PUBLIC_URL
+        value: $(BASE_URL)/metrics
+        
+      - name: DIRECTORY_URL
+        value: *DIRECTORY_URL
+
+      - name: PRIVATE_DIRECTORY_URL
+        value: *PRIVATE_DIRECTORY_URL
+
+      - name: MONGO_URL
+        value: mongodb://$(MONGO_HOST):27017/processings
+
+      - name: SYSLOG_SECRET
+        value: syslog_secret
 
 pvcs:
   # - name: "default"
