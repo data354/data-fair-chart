@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "datafair.fullname" . }}-test-connection"
+  name: "{{ .Release.Name }}-test-connection"
   labels:
-    {{- include "datafair.labels" . | nindent 4 }}
+    name: 
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "datafair.fullname" . }}:80']
+      args: ['{{ .Values.public_address }}:{{ .Values.port }}']
   restartPolicy: Never
