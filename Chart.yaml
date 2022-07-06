@@ -1,6 +1,26 @@
 apiVersion: v2
 name: data-fair
-description: A Helm chart for datafair project
 type: application
-version: 0.1.0
-appVersion: "4.0"
+version: "1.0.0"
+appVersion: "3.0"
+kubeVersion: "1.22.3"
+description: A Helm chart for datafair project
+icon: https://data-fair.github.io/3/logo.png
+keywords:
+  - Open-source
+  - data-fair
+  - datafair
+  - open data
+  - opendata
+  - koumoul
+  - data354
+  - data
+  - visualization
+home: https://koumoul.com/en
+sources:
+  - https://github.com/data354/data-fair-chart
+maintainers:
+  - name: Edy KOFFI
+    email: edy.koffi@data354.co
+    url: https://www.linkedin.com/in/edy-koffi-948494192/
+
