@@ -576,3 +576,5 @@ services:
       - name: http
         port: 8080
 
+  - name: prometheus
+    metrics: true
