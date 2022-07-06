@@ -19,3 +19,24 @@ metadata:
 data:
   default.conf: |-
     {{ .Files.Get "nginx.conf" | indent 2 }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-prometheus-conf
+data:
+  prometheus.yml: |-
+    scrape_configs:
+      - job_name: services-metrics
+        scrape_interval: {{ default "120s" .Values.prometheus_scrape_interval }}
+        metrics_path: {{ default "/global-metrics" .Values.prometheus_metrics_path }}
+        static_configs:
+          {{ range .Values.services }}
+          {{ if .metrics }}
+          - targets: ['{{ .name }}:9090']
+            labels:
+              service: {{ .name }}
+          {{ end }}
+          {{ end }}

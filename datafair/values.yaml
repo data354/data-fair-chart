@@ -6,6 +6,9 @@ public_ip: 192.168.49.2
 port: &port 32001
 protocol: http
 
+prometheus_metrics_path: /global-metrics
+prometheus_scrape_interval: 120s
+
 apps:
   - name: thumbor
     image: apsl/thumbor:6.7.0
@@ -465,7 +468,6 @@ apps:
         configMapKeyRef: &DATA_FAIR_API_KEY
             name: global-conf
             key: data-fair-api-key
-
 
 pvcs:
   # - name: "default"
