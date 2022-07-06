@@ -46,6 +46,13 @@ apps:
         mountPath: /etc/nginx/conf.d
         readOnly: true
 
+  - name: prometheus
+    image: prom/prometheus
+    volumes:
+      - name: prometheus-conf
+        type: configMap
+        mountPath: /etc/prometheus
+
   - name: mongo
     image: mongo:4.4
     volumes:
