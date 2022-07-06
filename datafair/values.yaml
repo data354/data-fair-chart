@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-public_ip: 192.168.49.2
+public_address: 192.168.49.2
 port: &port 32001
 protocol: http
 
@@ -495,6 +495,7 @@ services:
 
   # - name: example
   #   type: ClusterIP | NodePort
+  #   inProxy: false
   #   metrics: false
   #   externalName: mongo.com
   #   ports: 
@@ -520,61 +521,70 @@ services:
     type: NodePort
     ports: 
       - name: http
-        targetPort: 80
+        targetPort: *port
         port: *port
         nodePort: *port
 
   - name: capture
+    inProxy: true
     ports: 
-      - name: http
+      - name: capture
         port: 8080
 
   - name: openapi-viewer
+    inProxy: true
     ports: 
-      - name: http
+      - name: openapi-viewer
         port: 8080
 
   - name: thumbor
+    inProxy: true
     ports: 
-      - name: http
+      - name: thumbor
         port: 8000
 
   - name: simple-directory
+    inProxy: true
     ports: 
-      - name: auth
+      - name: simple-directory
         port: 8080
-      - name: mail
+      - name: mails
         port: 1080
 
   - name: portals
+    inProxy: true
     metrics: true
     ports: 
-      - name: http
+      - name: portals
         port: 8080
 
   - name: data-fair
+    inProxy: true
     metrics: true
     ports: 
-      - name: http
+      - name: data-fair
         port: 8080
 
   - name: notify
+    inProxy: true
     metrics: true
     ports: 
-      - name: http
+      - name: notify
         port: 8080
 
   - name: metrics
+    inProxy: true
     metrics: true
     ports: 
-      - name: http
+      - name: metrics
         port: 8080
 
   - name: processings
+    inProxy: true
     metrics: true
     ports: 
-      - name: http
+      - name: processings
         port: 8080
 
-  - name: prometheus
+  - name: prometheus-metrics
     metrics: true

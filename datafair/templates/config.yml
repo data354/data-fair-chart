@@ -1,31 +1,60 @@
+{{- $release_name := .Release.Name -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-global-conf
+  name: {{ $release_name }}-global-conf
 data:
-  base-url: "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}"
+  base-url: "{{ .Values.protocol}}://{{ .Values.public_address}}:{{ .Values.port}}"
   mongo-host: mongo
   elasticsearch-host: elasticsearch
   secret: azerty
   data-fair-api-key: dTo4Z21YOHdjYlY6U3M0akREU1pkRERqOHBnRnFQUVpf
-  mails-transport: '{"host": "{{ .Values.protocol}}://{{ .Values.public_ip}}:{{ .Values.port}}/mails"}'
+  mails-transport: '{"host": "{{ .Values.protocol}}://{{ .Values.public_address}}:{{ .Values.port}}/mails"}'
 
 ---
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-nginx-conf
+  name: {{ $release_name }}-nginx-conf
 data:
   default.conf: |-
-    {{ .Files.Get "nginx.conf" | indent 2 }}
+    server {
+      listen {{ .Values.port }};
+      server_name _;
 
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header If-Modified-Since $http_if_modified_since;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+      proxy_read_timeout 600s;
+      client_max_body_size 0;
+      proxy_request_buffering off;
+
+      location = / {  
+        return 302 /data-fair/;
+      }
+
+      {{ range .Values.services }}
+      {{ if .inProxy }}
+      {{ $Global := .}}
+      {{ range .ports }}
+      location /{{ .name }} {
+        rewrite  ^/{{ .name }}/(.*) /$1 break;
+        proxy_pass http://{{ $Global.name }}:{{ .port }}/;
+      }
+      {{ end }}
+      {{ end }}
+      {{ end }}
+    }
 ---
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-prometheus-conf
+  name: {{ $release_name }}-prometheus-conf
 data:
   prometheus.yml: |-
     scrape_configs:
