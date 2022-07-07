@@ -46,7 +46,7 @@ apps:
         mountPath: /etc/nginx/conf.d
         readOnly: true
 
-  - name: prometheus
+  - name: prometheus-metrics
     image: prom/prometheus
     volumes:
       - name: prometheus-conf
