@@ -1,9 +1,12 @@
-Thank you for installing {{ .Chart.Name }}.
+🎊 🎉 🎊 🎉 🎊 🎉 🎊 🎉 Congratulations 🎊 🎉 🎊 🎉 🎊 🎉 🎊 🎉
 
+You have installed {{ .Chart.Name }}:{{ .Chart.Version }}.
 Your release is named {{ .Release.Name }}.
+Your app is running on {{ print .Values.protocol "://" .Values.public_address ":" .Values.port}}
 
-To learn more about the release, try:
+📢 This Chart provide an internal prometheus service (ClusterIP) witch scrape metrics from another services (metrics, data-fair, notify, processings, portals) for monitoring purpose.
 
-  $ helm status {{ .Release.Name }}
-  $ helm get all {{ .Release.Name }}
+Use 'kubectl port-forward svc/prometheus-metrics 9090' for exposing service to public.
+
+📢 Get more information about this chart on https://artifacthub.io/packages/helm/data354-helm/data-fair
 
