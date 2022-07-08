@@ -37,17 +37,17 @@ data:
         return 302 /data-fair/;
       }
 
-      {{ range .Values.services }}
-      {{ if .inProxy }}
-      {{ $Global := .}}
-      {{ range .ports }}
+      {{- range .Values.services }}
+      {{- if .inProxy }}
+      {{- $Global := . }}
+      {{- range .ports }}
       location /{{ .name }} {
         rewrite  ^/{{ .name }}/(.*) /$1 break;
         proxy_pass http://{{ $Global.name }}:{{ .port }}/;
       }
-      {{ end }}
-      {{ end }}
-      {{ end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
     }
 ---
 

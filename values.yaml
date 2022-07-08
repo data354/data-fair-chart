@@ -534,7 +534,7 @@ services:
   - name: openapi-viewer
     inProxy: true
     ports: 
-      - name: openapi-viewer
+      - name: api-doc
         port: 8080
 
   - name: thumbor
@@ -588,5 +588,5 @@ services:
 
   - name: prometheus-metrics
     ports: 
-      name: prometheus-metrics
-      port: 9090
+      - name: prometheus-metrics
+        port: 9090
