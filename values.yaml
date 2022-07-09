@@ -12,7 +12,7 @@ prometheus_scrape_interval: 120s
 apps:
   - name: thumbor
     image: apsl/thumbor:6.7.0
-    env: 
+    env:
       - name: MAX_AGE
         value: "600"
       - name: THUMBOR_PORT
@@ -32,12 +32,12 @@ apps:
     image: ghcr.io/data-fair/elasticsearch:7.17.1
     env:
       - name: discovery.type
-        value: single-node 
+        value: single-node
     volumes:
       - name: elasticsearch
         type: persistentVolumeClaim
         mountPath: /usr/share/elasticsearch/data
-  
+
   - name: nginx
     image: nginx:1.21.6-alpine
     volumes:
@@ -74,7 +74,7 @@ apps:
         configMapKeyRef: &BASE_URL
           name: global-conf
           key: base-url
-                  
+
       - name: MONGO_HOST
         configMapKeyRef: &MONGO_HOST
           name: global-conf
@@ -128,13 +128,13 @@ apps:
         configMapKeyRef: &SECRET_NOTIFICATIONS
           name: global-conf
           key: secret
-      
+
       - name: SECRET_SENDMAILS
         value: $(SECRET_NOTIFICATIONS)
 
       - name: SECRET_IDENTITIES
         value: $(SECRET_NOTIFICATIONS)
-  
+
   - name: openapi-viewer
     image: koumoul/openapi-viewer:1
 
@@ -152,19 +152,19 @@ apps:
 
       - name: PUBLIC_URL
         value: $(BASE_URL)/capture
-      
+
   - name: metrics
     image: ghcr.io/data-fair/metrics:0
     env:
       - name: BASE_URL
         configMapKeyRef: *BASE_URL
-            
+
       - name: MONGO_HOST
         configMapKeyRef: *MONGO_HOST
 
       - name: PUBLIC_URL
         value: $(BASE_URL)/metrics
-        
+
       - name: DIRECTORY_URL
         value: *DIRECTORY_URL
 
@@ -216,6 +216,13 @@ apps:
       - name: data-fair
         type: persistentVolumeClaim
         mountPath: /data
+    probes:
+      httpGet:
+        path: /
+        port: 8080
+      failureThreshold: 1
+      periodSeconds: 10
+
     env:
       - name: BASE_URL
         configMapKeyRef: *BASE_URL
@@ -225,8 +232,8 @@ apps:
 
       - name: ELASTICSEARCH_HOST
         configMapKeyRef: &ELASTICSEARCH_HOST
-            name: global-conf
-            key: elasticsearch-host
+          name: global-conf
+          key: elasticsearch-host
 
       - name: MODE
         value: server
@@ -255,7 +262,7 @@ apps:
 
       - name: NOTIFY_URL
         value: &NOTIFY_URL $(BASE_URL)/notify
-        
+
       - name: PRIVATE_NOTIFY_URL
         value: &PRIVATE_NOTIFY_URL http://notify:8080
 
@@ -280,9 +287,9 @@ apps:
   - name: data-fair-worker
     image: ghcr.io/data-fair/data-fair:3
     volumes:
-    - name: data-fair
-      type: persistentVolumeClaim
-      mountPath: /data
+      - name: data-fair
+        type: persistentVolumeClaim
+        mountPath: /data
 
     env:
       - name: BASE_URL
@@ -293,7 +300,7 @@ apps:
 
       - name: ELASTICSEARCH_HOST
         configMapKeyRef: *ELASTICSEARCH_HOST
-            
+
       - name: MODE
         value: worker
 
@@ -323,7 +330,7 @@ apps:
 
       - name: NOTIFY_URL
         value: *NOTIFY_URL
-        
+
       - name: PRIVATE_NOTIFY_URL
         value: *PRIVATE_NOTIFY_URL
 
@@ -364,7 +371,7 @@ apps:
 
       - name: PRIVATE_NOTIFY_URL
         value: *PRIVATE_NOTIFY_URL
-        
+
       - name: OPENAPIVIEWER_URL
         value: *OPENAPI_VIEWER_URL
 
@@ -422,11 +429,11 @@ apps:
 
       - name: DATA_FAIR_ADMIN_MODE
         value: "true"
-        
+
       - name: DATA_FAIR_API_KEY
         configMapKeyRef: &DATA_FAIR_API_KEY
-            name: global-conf
-            key: data-fair-api-key
+          name: global-conf
+          key: data-fair-api-key
 
       - name: SECRET_IDENTITIES
         configMapKeyRef: *SECRET_NOTIFICATIONS
@@ -470,15 +477,15 @@ apps:
 
       - name: DATA_FAIR_ADMIN_MODE
         value: "true"
-        
+
       - name: DATA_FAIR_API_KEY
         configMapKeyRef: &DATA_FAIR_API_KEY
-            name: global-conf
-            key: data-fair-api-key
+          name: global-conf
+          key: data-fair-api-key
 
 pvcs:
   # - name: "default"
-  #   accessModes: 
+  #   accessModes:
   #     - ReadWriteOnce
   #   storage: 100Mi
   - name: mongo
@@ -492,34 +499,32 @@ pvcs:
   - name: processings
 
 services:
-
   # - name: example
   #   type: ClusterIP | NodePort
   #   inProxy: false
   #   metrics: false
   #   externalName: mongo.com
-  #   ports: 
+  #   ports:
   #     - name: http
   #       port: 8080
   #       targetPort: 8080
   #       protocol: TCP
   #       nodePort: 32000
 
-
   - name: mongo
     # externalName: mongo.com
-    ports: 
+    ports:
       - name: db
         port: 27017
 
   - name: elasticsearch
-    ports: 
+    ports:
       - name: db
         port: 9200
-  
+
   - name: nginx
     type: NodePort
-    ports: 
+    ports:
       - name: http
         targetPort: *port
         port: *port
@@ -527,25 +532,25 @@ services:
 
   - name: capture
     inProxy: true
-    ports: 
+    ports:
       - name: capture
         port: 8080
 
   - name: openapi-viewer
     inProxy: true
-    ports: 
+    ports:
       - name: api-doc
         port: 8080
 
   - name: thumbor
     inProxy: true
-    ports: 
+    ports:
       - name: thumbor
         port: 8000
 
   - name: simple-directory
     inProxy: true
-    ports: 
+    ports:
       - name: simple-directory
         port: 8080
       - name: mails
@@ -554,39 +559,39 @@ services:
   - name: portals
     inProxy: true
     metrics: true
-    ports: 
+    ports:
       - name: portals
         port: 8080
 
   - name: data-fair
     inProxy: true
     metrics: true
-    ports: 
+    ports:
       - name: data-fair
         port: 8080
 
   - name: notify
     inProxy: true
     metrics: true
-    ports: 
+    ports:
       - name: notify
         port: 8080
 
   - name: metrics
     inProxy: true
     metrics: true
-    ports: 
+    ports:
       - name: metrics
         port: 8080
 
   - name: processings
     inProxy: true
     metrics: true
-    ports: 
+    ports:
       - name: processings
         port: 8080
 
   - name: prometheus-metrics
-    ports: 
+    ports:
       - name: prometheus-metrics
         port: 9090

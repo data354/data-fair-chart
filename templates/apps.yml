@@ -17,47 +17,61 @@ spec:
       containers:
         - name: {{ $release_name }}-{{ .name }}
           image: {{ .image }}
-          {{ with .volumes }}
+          {{- with .volumes }}
           volumeMounts:
             {{ range . }}
             - name: {{ $release_name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ default "false" .readOnly }}
             {{ end }}
-          {{ end }}
-          {{ with .env }}
+          {{- end }}
+          {{- with .probes }}
+          readinessProbe:
+            httpGet: 
+              path: {{ .httpGet.path }}
+              port: {{ .httpGet.port }}
+            failureThreshold: {{ .httpGet.failureThreshold }}
+            periodSeconds: {{ .httpGet.periodSeconds }}
+          livenessProbe:
+            httpGet: 
+              path: {{ .httpGet.path }}
+              port: {{ .httpGet.port }}
+            failureThreshold: {{ .httpGet.failureThreshold }}
+            periodSeconds: {{ .httpGet.periodSeconds }}
+          {{- end }}
+          {{- with .env }}
           env:
-          {{ range . }}
+          {{- range . }}
             - name: {{ .name }}
-            {{ with .value }}
+            {{- with .value }}
               value: {{ . | quote }}
-            {{ end }}
-            {{ with .configMapKeyRef }}
+            {{- end }}
+            {{- with .configMapKeyRef }}
               valueFrom:
                 configMapKeyRef:
                   name: {{ $release_name }}-{{ .name }}
                   key: {{ .key }}
-            {{ end }}
-            {{ with .secretKeyRef }}
+            {{- end }}
+            {{- with .secretKeyRef }}
               valueFrom:
                 secretKeyRef:
                   name: {{ $release_name }}-{{ .name }}
                   key: {{ .key }}
-            {{ end }}
-          {{ end }}
-          {{ end }}
-      {{ with .volumes }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+      {{- with .volumes }}
       volumes:
-      {{ range . }}
+      {{- range . }}
         - name: {{ $release_name }}-{{ .name }}
-        {{ if eq .type "configMap" }}
+        {{- if eq .type "configMap" }}
           configMap:
             name: {{ $release_name }}-{{ .name }}
-        {{ else if eq .type "persistentVolumeClaim" }}
+        {{- else if eq .type "persistentVolumeClaim" }}
           persistentVolumeClaim:
             claimName: {{ $release_name }}-{{ .name }}
-        {{ end }}
-      {{ end }}
-      {{ end }}
+        {{- end }}
+      {{- end }}
+      {{- end }}
 ---
-{{ end }}
+{{- end }}
