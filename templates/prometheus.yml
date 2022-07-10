@@ -1,0 +1,74 @@
+{{- if .Values.prometheus.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-metrics
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-metrics
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prometheus-metrics
+    spec:
+      containers:
+        - name: prometheus-metrics
+          image: prom/prometheus
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: {{ $.Release.Name }}-prometheus-conf
+              mountPath: /etc/prometheus
+          ports:
+            - containerPort: 9090
+
+    
+      volumes:
+        - name: {{ $.Release.Name }}-prometheus-conf
+          configMap:
+            name: {{ $.Release.Name }}-prometheus-conf
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-metrics
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  ports:
+    - port: 9090
+      targetPort: 9090
+      protocol: TCP
+      name: metrics
+  selector:
+    app: prometheus-metrics
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-prometheus-conf
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  prometheus.yml: |-
+    scrape_configs:
+      - job_name: services-metrics
+        scrape_interval: {{ default "120s" .Values.prometheus.scrape_interval }}
+        metrics_path: {{ default "/global-metrics" .Values.prometheus.metrics_path }}
+        static_configs:
+          {{- range .Values.services }}
+          {{- if .metrics }}
+          - targets: ['{{ .name }}:9090']
+            labels:
+              service: {{ .name }}
+          {{- end }}
+          {{- end }}
+
+{{ end }}

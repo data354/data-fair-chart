@@ -49,23 +49,3 @@ data:
       {{- end }}
       {{- end }}
     }
----
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ $release_name }}-prometheus-conf
-data:
-  prometheus.yml: |-
-    scrape_configs:
-      - job_name: services-metrics
-        scrape_interval: {{ default "120s" .Values.prometheus_scrape_interval }}
-        metrics_path: {{ default "/global-metrics" .Values.prometheus_metrics_path }}
-        static_configs:
-          {{ range .Values.services }}
-          {{ if .metrics }}
-          - targets: ['{{ .name }}:9090']
-            labels:
-              service: {{ .name }}
-          {{ end }}
-          {{ end }}

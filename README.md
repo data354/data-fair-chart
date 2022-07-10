@@ -22,7 +22,7 @@ Helm 3+
 
 ### Get Helm Repository Info
 
-``` 
+```bash
 helm repo add data354-helm https://data354.github.io/helm
 helm repo update
 helm install [RELEASE_NAME] data354-helm/data-fair
@@ -30,20 +30,20 @@ helm install [RELEASE_NAME] data354-helm/data-fair
 
 ### Installing Helm Chart
 
-``` 
+```bash
 helm install [RELEASE_NAME] data354-helm/data-fair
 ```
 Par defaut helm essaye de déployer les ressources dans le namesapce data-fair. Il doit exister
 Si vous voulez utilisez un autre namespace pr2cisez le :
 
-```
+```bash
 helm install [RELEASE_NAME] data354-helm/data-fair --namesape default
 ```
 Changez ``default`` par votre namespace.
 
 ### Uninstalling Helm Chart
 
-``` 
+```bash
 helm uninstall [RELEASE_NAME]
 ```
 This removes all the Kubernetes components associated with the chart and deletes the release.
@@ -52,7 +52,7 @@ See [*helm uninstall*](https://helm.sh/docs/helm/helm_uninstall/) for command do
 
 ### Upgrading Helm Chart
 
-``` 
+```bash
 helm upgrade [RELEASE_NAME] data354-helm/data-fair
 ```
 
@@ -63,7 +63,18 @@ Dans cette section nous abordons les valeurs les plus importantes à modifier da
 ### Utiliser une base de donn2es externe
 
 
-### Definir l'adresse et le port
+### Definir l'adresse et le port du proxy
 
 
 ### Prometheus Metrics
+
+```yaml
+prometheus:
+  enable: true
+  metrics_path: /global-metrics
+  scrape_interval: 120s
+```
+Par default promteheus est activé avec cette configuration. Si vous voulez le désqctiver :
+```bash
+helm install --set prometheus.enable=false [RELEASE_NAME] data354-helm/data-fair
+```
