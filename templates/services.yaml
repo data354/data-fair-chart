@@ -7,26 +7,26 @@ metadata:
 spec:
   selector:
     name: {{ $release_name }}-{{ .name }}
-  {{ with .externalName }}
+  {{- with .externalName }}
   type: ExternalName
   externalName: {{ . }}
-  {{ else }}
+  {{- else }}
   type: {{ default "ClusterIP" .type }}
   ports:
-    {{ range .ports -}}
+    {{- range .ports }}
     - name: {{ .name }}
       port: {{ .port }}
       targetPort: {{ default .port .targetPort }}
       protocol: {{ default "TCP" .protocol }}
-      {{ with .nodePort }}
+      {{- with .nodePort }}
       nodePort: {{ . }}
-      {{ end }}
-    {{ end -}}
-    {{ if .metrics -}}
+      {{- end }}
+    {{- end }}
+    {{- if .metrics }}
     - name: prometheus
       port: 9090
       targetPort: 9090
-    {{ end }}
-  {{ end }}
+    {{- end }}
+  {{- end }}
 ---
 {{ end }}
