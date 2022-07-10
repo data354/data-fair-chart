@@ -1,21 +1,19 @@
 apiVersion: v2
 name: data-fair
 type: application
-version: "1.0.4"
+version: "1.0.7"
 appVersion: "3.0"
 description: A Helm chart for datafair project
 icon: https://data-fair.github.io/3/logo.png
 keywords:
   - Open-source
-  - data-fair
-  - datafair
+  - data fair
   - open data
-  - opendata
   - koumoul
   - data354
   - data
   - visualization
-home: https://koumoul.com/en
+home: https://data-fair.github.io/3/
 sources:
   - https://github.com/data354/data-fair-chart
 maintainers:
