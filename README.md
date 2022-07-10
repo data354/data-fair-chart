@@ -74,7 +74,7 @@ prometheus:
   metrics_path: /global-metrics
   scrape_interval: 120s
 ```
-Par default promteheus est activé avec cette configuration. Si vous voulez le désqctiver :
+Par default promteheus est activé avec cette configuration. Si vous voulez le désactiver :
 ```bash
 helm install --set prometheus.enable=false [RELEASE_NAME] data354-helm/data-fair
 ```
