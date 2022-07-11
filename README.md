@@ -10,7 +10,7 @@ style="float: left; margin-right: 10px;" />
 
 <img src="https://static.wixstatic.com/media/84b0cf_beb914d4ae1c4a67a943e2a56de2b767~mv2.png/v1/fill/w_216,h_65,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/logo-data354_CL.png"/>
 
-[Data Fair](https://data-fair.github.io/3/functional-presentation/introduction) et son écosystème permettent de mettre en œuvre une plateforme de partage de données (interne ou opendata) et de visualisations. Cette plateforme peut être à destination du grand public, qui peut accéder aux données au travers de visualisations interactives adaptées, aussi bien qu’à un public plus expert qui peut accéder aux données au travers des APIs.
+[Data Fair](https://data-fair.github.io/3/functional-presentation/introduction) and its ecosystem enable the implementation of a data sharing platform (internal or opendata) and visualizations. This platform can be aimed at the general public, who can access the data through adapted interactive visualizations, as well as at a more expert public who can access the data through APIs.
 
 ## **Prerequisites**
 ```
@@ -33,8 +33,7 @@ helm install [RELEASE_NAME] data354-helm/data-fair
 ```bash
 helm install [RELEASE_NAME] data354-helm/data-fair
 ```
-Par defaut helm essaye de déployer les ressources dans le namesapce data-fair. Il doit exister
-Si vous voulez utilisez un autre namespace pr2cisez le :
+Note that the above command will install Superset into current namespace of your Kubernetes cluster. If you want to use another namespace specify it:
 
 ```bash
 helm install [RELEASE_NAME] data354-helm/data-fair --namesape default
@@ -58,13 +57,41 @@ helm upgrade [RELEASE_NAME] data354-helm/data-fair
 
 ## **Overrides values**
 
-Dans cette section nous abordons les valeurs les plus importantes à modifier dans le fichier values.yml.
+<!-- ### **Utiliser une base de donnees externe**
+Notre chart fournit par defaut les base de donnees elasticsearch et mongodb.
+Si vous en disposer deja vous pouvez utiliser les siennes.
 
-### Utiliser une base de donn2es externe
+**prerequis**
+```yml
+mongo: 4.x.x
+elasticsearch: 7.x.x
+```
 
+Precisez les valeurs suivantes:
+```yaml
+mongo:
+  external: true
+  url: data.mongo.com
+```
+```yaml
+elasticsearch:
+  external: true
+  url: data.mongo.com # example
+```
+si votre base de donnees utilise des credentials n'oubliez pas de les specifiez
+```yaml
+mongo:
+  external: true
+  url: user:pwd@data.mongo.com # example
+```
+```yaml
+elasticsearch:
+  external: true
+  url: user:pwd@data.mongo.com # example
+``` -->
 
-### Definir l'adresse et le port du proxy
-Si vous etes dans un environnement de test tel que Minikube, cette configuration marchera sans aucun probleme.
+### **Definir l'adresse et le port du proxy**
+If you are in a test environment like Minikube, this configuration will work without any problem.
 ```yaml
 proxy:
   public_address: 192.168.49.2 # Minikube host for testing
@@ -73,9 +100,9 @@ proxy:
   nodePort: true
 ```
 
-Lorsque vous definissez l'option nodePort a true, assurez vous d'avoir choisit une valeur du port comprise entre 30000 et 32767 pour que cela soit accepte par kubernetes, car le service de type nodeport cree utilise le meme numero de port definie.
+When you set the nodePort option to true, make sure you choose a port value between 30000 and 32767 so that it is accepted by kubernetes, because the nodeport service created uses the same defined port number.
 
-En production vous devez fixer le nodeport a false pour eviter certains conflits, dans ce cas un service de type CLusterIp est cree. Il serait alors preferable de creer une resource ingress afin de rediger le traffic externe vers votre service.
+In production you have to set the nodeport to false to avoid some conflicts, in this case a CLusterIp service is created. It would then be better to create an ingress resource to redirect external traffic to your service.
 ```yaml
 proxy:
   public_address: datafair.data354.com
@@ -83,9 +110,9 @@ proxy:
   port: 443
   nodePort: false
 ```
-Pour le moment cette version de notre chart ne dispose pas de resource ingress integre. cette fonctionnalite sera ajoutee dans une version ulterieure.
+For now, this version of our chart does not have a built-in ingress resource. This feature will be added in a later version.
 
-### Prometheus Metrics
+### **Prometheus Metrics**
 
 ```yaml
 prometheus:
@@ -93,7 +120,7 @@ prometheus:
   metrics_path: /global-metrics
   scrape_interval: 120s
 ```
-Par default promteheus est activé avec cette configuration. Si vous voulez le désactiver :
+By default promteheus is enabled with this configuration. If you want to disable it :
 ```bash
 helm install --set prometheus.enable=false [RELEASE_NAME] data354-helm/data-fair
 ```
