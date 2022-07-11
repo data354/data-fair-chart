@@ -64,7 +64,26 @@ Dans cette section nous abordons les valeurs les plus importantes à modifier da
 
 
 ### Definir l'adresse et le port du proxy
+Si vous etes dans un environnement de test tel que Minikube, cette configuration marchera sans aucun probleme.
+```yaml
+proxy:
+  public_address: 192.168.49.2 # Minikube host for testing
+  scheme: http # Or https
+  port: 32000
+  nodePort: true
+```
 
+Lorsque vous definissez l'option nodePort a true, assurez vous d'avoir choisit une valeur du port comprise entre 30000 et 32767 pour que cela soit accepte par kubernetes, car le service de type nodeport cree utilise le meme numero de port definie.
+
+En production vous devez fixer le nodeport a false pour eviter certains conflits, dans ce cas un service de type CLusterIp est cree. Il serait alors preferable de creer une resource ingress afin de rediger le traffic externe vers votre service.
+```yaml
+proxy:
+  public_address: datafair.data354.com
+  scheme: https # Or https
+  port: 443
+  nodePort: false
+```
+Pour le moment cette version de notre chart ne dispose pas de resource ingress integre. cette fonctionnalite sera ajoutee dans une version ulterieure.
 
 ### Prometheus Metrics
 

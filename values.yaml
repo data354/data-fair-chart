@@ -1,15 +1,17 @@
 # Default values for datafair.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-public_address: 192.168.49.2
-port: &port 32001
-protocol: http
-
+proxy:
+  public_address: 192.168.49.2 #Minikube host for testing
+  scheme: http # Or https
+  port: 32000
+  nodePort: true
+  
 prometheus:
   enable: true
   metrics_path: /global-metrics
   scrape_interval: 120s
+
 
 apps:
   - name: thumbor
@@ -39,14 +41,6 @@ apps:
       - name: elasticsearch
         type: persistentVolumeClaim
         mountPath: /usr/share/elasticsearch/data
-
-  - name: nginx
-    image: nginx:1.21.6-alpine
-    volumes:
-      - name: nginx-conf
-        type: configMap
-        mountPath: /etc/nginx/conf.d
-        readOnly: true
 
   - name: mongo
     image: mongo:4.4
@@ -516,14 +510,6 @@ services:
     ports:
       - name: db
         port: 9200
-
-  - name: nginx
-    type: NodePort
-    ports:
-      - name: http
-        targetPort: *port
-        port: *port
-        nodePort: *port
 
   - name: capture
     inProxy: true

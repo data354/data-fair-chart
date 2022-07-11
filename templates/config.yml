@@ -4,12 +4,12 @@ kind: ConfigMap
 metadata:
   name: {{ $release_name }}-global-conf
 data:
-  base-url: "{{ .Values.protocol}}://{{ .Values.public_address}}:{{ .Values.port}}"
+  base-url: "{{ .Values.proxy.scheme}}://{{ .Values.proxy.public_address }}:{{ .Values.proxy.port}}"
   mongo-host: mongo
   elasticsearch-host: elasticsearch
   secret: azerty
   data-fair-api-key: dTo4Z21YOHdjYlY6U3M0akREU1pkRERqOHBnRnFQUVpf
-  mails-transport: '{"host": "{{ .Values.protocol}}://{{ .Values.public_address}}:{{ .Values.port}}/mails"}'
+  mails-transport: '{"host": "{{ .Values.proxy.scheme}}://{{ .Values.proxy.public_address}}:{{ .Values.proxy.port}}/mails"}'
 
 ---
 
@@ -20,8 +20,9 @@ metadata:
 data:
   default.conf: |-
     server {
-      listen {{ .Values.port }};
-      server_name _;
+      listen {{ .Values.proxy.port }};
+      listen [::]:{{ .Values.proxy.port }};
+      server_name {{ .Values.proxy.public_address }};
 
       proxy_set_header Host $http_host;
       proxy_set_header X-Real-IP $remote_addr;

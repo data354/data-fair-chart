@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prometheus-metrics
+  name: {{ $.Release.Name }}-prometheus-metrics
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   selector:
     matchLabels:
-      app: prometheus-metrics
+      app: {{ $.Release.Name }}-prometheus-metrics
   replicas: 1
   template:
     metadata:
       labels:
-        app: prometheus-metrics
+        app: {{ $.Release.Name }}-prometheus-metrics
     spec:
       containers:
         - name: prometheus-metrics
@@ -46,7 +46,7 @@ spec:
       protocol: TCP
       name: metrics
   selector:
-    app: prometheus-metrics
+    app: {{ $.Release.Name }}-prometheus-metrics
 
 ---
 
