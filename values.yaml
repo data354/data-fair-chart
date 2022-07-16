@@ -12,7 +12,6 @@ prometheus:
   metrics_path: /global-metrics
   scrape_interval: 120s
 
-
 apps:
   - name: thumbor
     image: apsl/thumbor:6.7.0
@@ -31,23 +30,6 @@ apps:
       - name: thumbor
         type: persistentVolumeClaim
         mountPath: /data
-
-  - name: elasticsearch
-    image: ghcr.io/data-fair/elasticsearch:7.17.1
-    env:
-      - name: discovery.type
-        value: single-node
-    volumes:
-      - name: elasticsearch
-        type: persistentVolumeClaim
-        mountPath: /usr/share/elasticsearch/data
-
-  - name: mongo
-    image: mongo:4.4
-    volumes:
-      - name: mongo
-        type: persistentVolumeClaim
-        mountPath: /data/db
 
   - name: simple-directory
     image: ghcr.io/data-fair/simple-directory:4
@@ -477,10 +459,6 @@ pvcs:
   #   accessModes:
   #     - ReadWriteOnce
   #   storage: 100Mi
-  - name: mongo
-    storage: 2Gi
-  - name: elasticsearch
-    storage: 500Mi
   - name: data-fair
   - name: simple-directory
   - name: thumbor
@@ -499,17 +477,6 @@ services:
   #       targetPort: 8080
   #       protocol: TCP
   #       nodePort: 32000
-
-  - name: mongo
-    # externalName: mongo.com
-    ports:
-      - name: db
-        port: 27017
-
-  - name: elasticsearch
-    ports:
-      - name: db
-        port: 9200
 
   - name: capture
     inProxy: true

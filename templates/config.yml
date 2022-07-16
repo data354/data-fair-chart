@@ -1,8 +1,9 @@
-{{- $release_name := .Release.Name -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $release_name }}-global-conf
+  name: global-conf
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}"
 data:
   base-url: "{{ .Values.proxy.scheme}}://{{ .Values.proxy.public_address }}:{{ .Values.proxy.port}}"
   mongo-host: mongo
@@ -16,7 +17,9 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $release_name }}-nginx-conf
+  name: nginx-conf
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}"
 data:
   default.conf: |-
     server {

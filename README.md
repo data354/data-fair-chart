@@ -36,9 +36,9 @@ helm install [RELEASE_NAME] data354-helm/data-fair
 Note that the above command will install Superset into current namespace of your Kubernetes cluster. If you want to use another namespace specify it:
 
 ```bash
-helm install [RELEASE_NAME] data354-helm/data-fair --namesape default
+helm install [RELEASE_NAME] data354-helm/data-fair --namesape data-fair
 ```
-Changez ``default`` par votre namespace.
+``data-fair`` namespace which must exist before.
 
 ### Uninstalling Helm Chart
 
@@ -90,7 +90,7 @@ elasticsearch:
   url: user:pwd@data.mongo.com # example
 ``` -->
 
-### **Definir l'adresse et le port du proxy**
+### **Define proxy address and port**
 If you are in a test environment like Minikube, this configuration will work without any problem.
 ```yaml
 proxy:

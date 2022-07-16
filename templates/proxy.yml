@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $.Release.Name }}-proxy
+  name: proxy
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}"
 spec:
   selector:
     matchLabels:
-      app: {{ $.Release.Name }}-proxy
+      app: proxy
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ $.Release.Name }}-proxy
+        app: proxy
         chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     spec:
       containers:
-        - name: {{ $.Release.Name }}-proxy
+        - name: proxy
           image: nginx:1.21.6-alpine
           imagePullPolicy: IfNotPresent
           volumeMounts:
-            - name: {{ $.Release.Name }}-nginx-conf
+            - name: nginx-conf
               mountPath: /etc/nginx/conf.d
               readOnly: true
 
       volumes:
-        - name: {{ $.Release.Name }}-nginx-conf
+        - name: nginx-conf
           configMap:
-            name: {{ $.Release.Name }}-nginx-conf
+            name: nginx-conf
 
 ---
 
@@ -36,7 +36,7 @@ kind: Service
 metadata:
   name: proxy
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}"
 spec:
   ports:
     - port: {{ .Values.proxy.port }}
@@ -48,4 +48,4 @@ spec:
   type: NodePort
   {{- end }}
   selector:
-    app: {{ $.Release.Name }}-proxy
+    app: proxy

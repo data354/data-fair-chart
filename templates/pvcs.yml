@@ -1,9 +1,10 @@
-{{- $release_name := .Release.Name -}}
 {{- range .Values.pvcs -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ $release_name }}-{{ .name }}
+  name: {{ .name }}
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}"
 spec:
   accessModes:
     {{ range .accessModes -}}
