@@ -102,7 +102,7 @@ proxy:
 
 When you set the nodePort option to true, make sure you choose a port value between 30000 and 32767 so that it is accepted by kubernetes, because the nodeport service created uses the same defined port number.
 
-In production you have to set the nodeport to false to avoid some conflicts, in this case a CLusterIp service is created. It would then be better to create an ingress resource to redirect external traffic to your service.
+In production you have to set the nodeport to false to avoid some conflicts, in this case a CLusterIp service is created. It would then be better to create an ingress resource to redirect external traffic to your service. Set public_address to the DNS record that resolves to your load balancer.
 ```yaml
 proxy:
   public_address: datafair.data354.com

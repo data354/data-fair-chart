@@ -461,10 +461,14 @@ pvcs:
   #     - ReadWriteOnce
   #   storage: 100Mi
   - name: data-fair
+    accessModes:
+      - ReadWriteMany
   - name: simple-directory
   - name: thumbor
   - name: portals
   - name: processings
+    accessModes:
+      - ReadWriteMany
 
 services:
   # - name: example
