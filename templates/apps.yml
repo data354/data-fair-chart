@@ -33,12 +33,20 @@ spec:
               port: {{ .httpGet.port }}
             failureThreshold: {{ .httpGet.failureThreshold }}
             periodSeconds: {{ .httpGet.periodSeconds }}
+            initialDelaySeconds: {{ .httpGet.initialDelaySeconds }}
           livenessProbe:
             httpGet: 
               path: {{ .httpGet.path }}
               port: {{ .httpGet.port }}
             failureThreshold: {{ .httpGet.failureThreshold }}
             periodSeconds: {{ .httpGet.periodSeconds }}
+            initialDelaySeconds: {{ .httpGet.initialDelaySeconds }}
+          startupProbe:
+            httpGet: 
+              path: {{ .httpGet.path }}
+              port: {{ .httpGet.port }}
+            failureThreshold: 30
+            periodSeconds: 10
           {{- end }}
           {{- with .env }}
           env:

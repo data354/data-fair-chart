@@ -189,10 +189,11 @@ apps:
         mountPath: /data
     probes:
       httpGet:
-        path: /
+        path: /api/v1/status
         port: 8080
-      failureThreshold: 1
-      periodSeconds: 10
+      failureThreshold: 4
+      periodSeconds: 30
+      initialDelaySeconds: 30
 
     env:
       - name: BASE_URL
