@@ -4,7 +4,7 @@
 proxy:
   public_address: 192.168.49.2 #Minikube host for testing
   scheme: http # Or https
-  port: 32000
+  port: 32001
   nodePort: true
   
 prometheus:
@@ -457,6 +457,7 @@ apps:
 
 pvcs:
   # - name: "default"
+  #   storageClass: ""
   #   accessModes:
   #     - ReadWriteOnce
   #   storage: 100Mi

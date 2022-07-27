@@ -12,6 +12,9 @@ spec:
     {{ else -}}
     - ReadWriteOnce
     {{- end }}
+  {{- if .storageClass }}
+  storageClassName: {{ .storageClass }}
+  {{- end }}
   resources:
     requests:
       storage: {{ default "100Mi" .storage }}
